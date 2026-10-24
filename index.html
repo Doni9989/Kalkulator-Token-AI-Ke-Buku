@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Token AI ke Buku</title>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.344.0/dist/umd/lucide.min.js"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --background: #f8fafc;
+            --card: #ffffff;
+            --text: #0f172a;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            padding: 2rem 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: var(--card);
+            padding: 2.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            width: 100%;
+            max-width: 550px;
+            border: 1px solid var(--border);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary);
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .unit {
+            position: absolute;
+            right: 1rem;
+            color: var(--text-light);
+            font-weight: 500;
+            pointer-events: none;
+        }
+
+        .input-with-unit input {
+            padding-right: 3.5rem;
+        }
+
+        .result-box {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 0.5rem;
+            display: none;
+        }
+
+        .result-title {
+            font-weight: 700;
+            color: #166534;
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .result-main {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #15803d;
+            margin-bottom: 1rem;
+        }
+
+        .result-details {
+            font-size: 0.9rem;
+            color: #166534;
+            line-height: 1.6;
+            border-top: 1px solid #bbf7d0;
+            padding-top: 0.75rem;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.85rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1><i data-lucide="book-open"></i> Token AI ke Buku</h1>
+        <p class="subtitle">Estimasi berapa banyak buku fisik yang setara dengan jumlah token AI Anda.</p>
+
+        <div class="form-group">
+            <label for="tokenCount">Jumlah Token</label>
+            <div class="input-wrapper input-with-unit">
+                <input type="number" id="tokenCount" placeholder="Contoh: 84000000" min="1">
+                <span class="unit">Token</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="language">Bahasa Dominan Teks</label>
+            <select id="language">
+                <option value="id">Bahasa Indonesia (1 kata ≈ 1.3 token)</option>
+                <option value="en" selected>Bahasa Inggris (1 kata ≈ 0.75 token)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="thickness">Ketebalan Buku Target</label>
+            <div class="input-wrapper input-with-unit">
+                <input type="number" id="thickness" value="5" min="0.5" step="0.5">
+                <span class="unit">cm</span>
+            </div>
+        </div>
+
+        <button class="btn" onclick="calculateBooks()">
+            <i data-lucide="calculator"></i> Hitung Estimasi
+        </button>
+
+        <div class="result-box" id="resultBox">
+            <div class="result-title">
+                <i data-lucide="sparkles"></i> Hasil Estimasi:
+            </div>
+            <div class="result-main" id="resultMain">
+                0 Buku
+            </div>
+            <div class="result-details" id="resultDetails">
+                <!-- Details injected here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        function calculateBooks() {
+            const tokenInput = document.getElementById('tokenCount').value;
+            const language = document.getElementById('language').value;
+            const thickness = parseFloat(document.getElementById('thickness').value);
+            const resultBox = document.getElementById('resultBox');
+            const resultMain = document.getElementById('resultMain');
+            const resultDetails = document.getElementById('resultDetails');
+
+            if (!tokenInput || tokenInput <= 0) {
+                alert('Silakan masukkan jumlah token yang valid.');
+                return;
+            }
+
+            const tokens = parseFloat(tokenInput);
+
+            // 1. Convert Token to Words based on language
+            // EN: 1 token = 0.75 words -> words = tokens * 0.75
+            // ID: 1 word = ~1.3 tokens -> words = tokens / 1.3
+            let words = 0;
+            if (language === 'en') {
+                words = tokens * 0.75;
+            } else {
+                words = tokens / 1.3;
+            }
+
+            // 2. Calculate Pages (Standard ~275 words per page)
+            const wordsPerPage = 275;
+            const totalPages = words / wordsPerPage;
+
+            // 3. Calculate Pages per Book based on thickness
+            // Assumption: 1 cm standard trade paperback novel paper is ~190 pages (double sided)
+            const pagesPerCm = 190; 
+            const pagesPerBook = thickness * pagesPerCm;
+
+            // 4. Calculate Total Books
+            const totalBooks = totalPages / pagesPerBook;
+            const stackHeight = totalBooks * thickness; // in cm
+            const stackHeightMeters = stackHeight / 100; // in meters
+
+            // Format numbers for clean display
+            const formattedBooks = totalBooks.toLocaleString('id-ID', { maximumFractionDigits: 1 });
+            const formattedTokens = tokens.toLocaleString('id-ID');
+            const formattedWords = Math.round(words).toLocaleString('id-ID');
+            const formattedPages = Math.round(totalPages).toLocaleString('id-ID');
+            const formattedPagesPerBook = Math.round(pagesPerBook).toLocaleString('id-ID');
+
+            // Render Results
+            resultMain.innerHTML = `&plusmn; ${formattedBooks} Buku`;
+            
+            resultDetails.innerHTML = `
+                &bull; <b>Total Kata:</b> ~${formattedWords} kata.<br>
+                &bull; <b>Total Halaman:</b> ~${formattedPages} halaman cetak.<br>
+                &bull; <b>Kapasitas 1 Buku (${thickness} cm):</b> ~${formattedPagesPerBook} halaman.<br>
+                &bull; <b>Tinggi Tumpukan:</b> Jika ditumpuk, tingginya mencapai &plusmn; <b>${stackHeightMeters.toFixed(1)} meter</b>.
+            `;
+
+            resultBox.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
